@@ -109,19 +109,11 @@ void parse_file(char * filename,
         }
 
         else if (!strcmp(lines[i], "move")) {
-            char args[3][16];
-            int ctr = 0;
-            char *token = strtok(lines[++i], " ");
-
-            while (token != NULL) {
-                strcpy(args[ctr++], token);
-                token = strtok(NULL, " ");
-            }
-
+            char * args = lines[++i];
             double x, y, z;
-            sscanf(args[0], "%le", &x);
-            sscanf(args[1], "%le", &y);
-            sscanf(args[2], "%le", &z);
+
+            sscanf(args, "%le %le %le",
+                   &x, &y, &z);
 
             struct matrix * translate = make_translate(x, y, z);
             matrix_mult(translate, transform);
