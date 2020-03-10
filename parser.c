@@ -65,6 +65,7 @@ void parse_file(char * filename,
     int SIZE = 100;
     color c;
     change_color(&c, 0, 0 , 0);
+    double step = 1;
 
     if (strcmp(filename, "stdin") == 0) f = stdin;
     else f = fopen(filename, "r");
@@ -89,9 +90,9 @@ void parse_file(char * filename,
 
         else if (!strcmp(lines[i], "line")) {
             char * args = lines[++i];
-            int x0, y0, z0, x1, y1, z1;
+            double x0, y0, z0, x1, y1, z1;
 
-            sscanf(args, "%d %d %d %d %d %d",
+            sscanf(args, "%le %le %le %le %le %le",
                    &x0, &y0, &z0, &x1, &y1, &z1);
 
             add_edge(edges, x0, y0, z0, x1, y1, z1);
@@ -120,26 +121,48 @@ void parse_file(char * filename,
         }
 
         else if (!strcmp(lines[i], "rotate")) {
-            char args[2][16];
-            int ctr = 0;
-            char *token = strtok(lines[++i], " ");
+            char * args = lines[++i];
 
-            while (token != NULL) {
-                strcpy(args[ctr++], token);
-                token = strtok(NULL, " ");
-            }
-
-            int angle;
-            sscanf(args[1], "%d", &angle);
+            double angle;
+            char axis;
+            sscanf(args, "%c %lf", &axis, &angle);
             double rad = angle * M_PI / 180;
-            char *axis = args[0];
 
             struct matrix * rotate;
-            if (!strcmp("x", axis)) rotate = make_rotX(rad);
-            else if (!strcmp("y", axis)) rotate = make_rotY(rad);
-            else if (!strcmp("z", axis)) rotate = make_rotZ(rad);
+            if ('x' == axis) rotate = make_rotX(rad);
+            else if ('y' == axis) rotate = make_rotY(rad);
+            else if ('z' == axis) rotate = make_rotZ(rad);
 
             matrix_mult(rotate, transform);
+        }
+
+        else if (!strcmp(lines[i], "circle")) {
+            char * args = lines[++i];
+            double cx, cy, cz, r;
+
+            sscanf(args, "%le %le %le %le", &cx, &cy, &cz, &r);
+
+            add_circle(edges, cx, cy, cz, r, step);
+        }
+
+        else if (!strcmp(lines[i], "hermite")) {
+            char * args = lines[++i];
+            double x0, y0, x1, y1, rx0, ry0, rx1, ry1;
+
+            sscanf(args, "%le %le %le %le %le %le %le %le",
+                          &x0, &y0, &x1, &y1, &rx0, &ry0, &rx1, &ry1);
+
+            add_curve(edges, x0, y0, x1, y1, rx0, ry0, rx1, ry1, step, 0);
+        }
+
+        else if (!strcmp(lines[i], "bezier")) {
+            char * args = lines[++i];
+            double x0, y0, x1, y1, x2, y2, x3, y3;
+
+            sscanf(args, "%le %le %le %le %le %le %le %le",
+                          &x0, &y0, &x1, &y1, &x2, &y2, &x3, &y3);
+
+            add_curve(edges, x0, y0, x1, y1, x2, y2, x3, y3, step, 1);
         }
 
         else if (!strcmp(lines[i], "display")) {

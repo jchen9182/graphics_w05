@@ -18,15 +18,19 @@ z0  z1  ... zn
   to generate the coefiecients for a bezier curve
   ====================*/
 struct matrix * make_bezier() {
-    return NULL;
+    struct matrix * m = new matrix(4, 4);
+    double ** matrix = m -> m;
+    return m;
 }
 
 /*======== struct matrix * make_hermite() ==========
   Returns: The correct 4x4 matrix that can be used
-  to generae the coefiecients for a hermite curve
+  to generate the coefiecients for a hermite curve
   ====================*/
 struct matrix * make_hermite() {
-    return NULL;
+    struct matrix * m = new matrix(4, 4);
+    double ** matrix = m -> m;
+    return m;
 }
 
 /*======== struct matrix * generate_curve_coefs() ==========
