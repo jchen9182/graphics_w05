@@ -48,14 +48,14 @@ struct matrix * make_hermite() {
     ident(m);
 
     matrix[0][0] = 2;
-    matrix[0][1] = -3;
+    matrix[0][1] = -2;
+    matrix[0][2] = 1;
     matrix[0][3] = 1;
-    matrix[1][0] = -2;
+    matrix[1][0] = -3;
     matrix[1][1] = 3;
-    matrix[2][0] = 1;
-    matrix[2][1] = -2;
+    matrix[1][2] = -2;
+    matrix[1][3] = -1;
     matrix[3][0] = 1;
-    matrix[3][1] = -1;
     matrix[3][3] = 0;
 
     return m;
@@ -77,15 +77,18 @@ struct matrix * generate_curve_coefs( double p0, double p1,
                                       double p2, double p3, int type) {
     struct matrix * m = new_matrix(4, 1);
     double ** matrix = m -> m;
+
     matrix[0][0] = p0;
     matrix[1][0] = p1;
     matrix[2][0] = p2;
     matrix[3][0] = p3;
-    struct matrix * curve;
+    m->lastcol++;
 
+    struct matrix * curve;
     if (type) curve = make_bezier();
     else curve = make_hermite();
     matrix_mult(curve, m);
+
     return m;
 }
 
