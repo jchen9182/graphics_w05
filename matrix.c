@@ -78,17 +78,14 @@ struct matrix * generate_curve_coefs( double p0, double p1,
     struct matrix * m = new_matrix(4, 1);
     double ** matrix = m -> m;
     matrix[0][0] = p0;
-    matrix[0][1] = p1;
-    matrix[0][2] = p2;
-    matrix[0][3] = p3;
+    matrix[1][0] = p1;
+    matrix[2][0] = p2;
+    matrix[3][0] = p3;
     struct matrix * curve;
 
     if (type) curve = make_bezier();
     else curve = make_hermite();
-    print_matrix(m);
-    print_matrix(curve);
     matrix_mult(curve, m);
-
     return m;
 }
 
