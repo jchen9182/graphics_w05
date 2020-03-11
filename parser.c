@@ -65,7 +65,7 @@ void parse_file(char * filename,
     int SIZE = 100;
     color c;
     change_color(&c, 0, 0 , 0);
-    double step = 1;
+    double step = .001;
 
     if (strcmp(filename, "stdin") == 0) f = stdin;
     else f = fopen(filename, "r");
@@ -80,9 +80,9 @@ void parse_file(char * filename,
         strcpy(lines[counter++], "\0");
     }
 
-    for (int i = 0; i < SIZE; i++) {
-        if (!strcmp(lines[i], "\0")) break;
+    for (int i = 0; i < 38; i++) {
         if (!strcmp(lines[i], "quit")) break;
+        if (!strcmp(lines[i], "\0") && !strcmp(lines[i + 1], "\0")) break;
 
         else if (!strcmp(lines[i], "ident")) ident(transform);
 
@@ -176,6 +176,7 @@ void parse_file(char * filename,
             draw_lines(edges, s, c);
             char * arg = lines[++i];
             save_extension(s, arg);
+            printf("Saved as %s\n", arg);
         }
     }
 }

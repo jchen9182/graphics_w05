@@ -18,8 +18,23 @@ z0  z1  ... zn
   to generate the coefiecients for a bezier curve
   ====================*/
 struct matrix * make_bezier() {
-    struct matrix * m = new matrix(4, 4);
+    struct matrix * m = new_matrix(4, 4);
     double ** matrix = m -> m;
+    ident(m);
+
+    matrix[0][0] = -1;
+    matrix[0][1] = 3;
+    matrix[0][2] = -3;
+    matrix[0][3] = 1;
+    matrix[1][0] = 3;
+    matrix[1][1] = -6;
+    matrix[1][2] = 3;
+    matrix[2][0] = -3;
+    matrix[2][1] = 3;
+    matrix[2][2] = 0;
+    matrix[3][0] = 1;
+    matrix[3][3] = 0;
+
     return m;
 }
 
@@ -28,8 +43,21 @@ struct matrix * make_bezier() {
   to generate the coefiecients for a hermite curve
   ====================*/
 struct matrix * make_hermite() {
-    struct matrix * m = new matrix(4, 4);
+    struct matrix * m = new_matrix(4, 4);
     double ** matrix = m -> m;
+    ident(m);
+
+    matrix[0][0] = 2;
+    matrix[0][1] = -3;
+    matrix[0][3] = 1;
+    matrix[1][0] = -2;
+    matrix[1][1] = 3;
+    matrix[2][0] = 1;
+    matrix[2][1] = -2;
+    matrix[3][0] = 1;
+    matrix[3][1] = -1;
+    matrix[3][3] = 0;
+
     return m;
 }
 
@@ -47,7 +75,21 @@ struct matrix * make_hermite() {
   ====================*/
 struct matrix * generate_curve_coefs( double p0, double p1,
                                       double p2, double p3, int type) {
-    return NULL;
+    struct matrix * m = new_matrix(4, 1);
+    double ** matrix = m -> m;
+    matrix[0][0] = p0;
+    matrix[0][1] = p1;
+    matrix[0][2] = p2;
+    matrix[0][3] = p3;
+    struct matrix * curve;
+
+    if (type) curve = make_bezier();
+    else curve = make_hermite();
+    print_matrix(m);
+    print_matrix(curve);
+    matrix_mult(curve, m);
+
+    return m;
 }
 
 /*======== struct matrix * make_translate() ==========
@@ -61,9 +103,11 @@ struct matrix * make_translate(double x, double y, double z) {
     struct matrix * m = new_matrix(4, 4);
     double ** matrix = m -> m;
     ident(m);
+
     matrix[0][3] = x;
     matrix[1][3] = y;
     matrix[2][3] = z;
+
     return m;
 }
 
@@ -78,9 +122,11 @@ struct matrix * make_scale(double x, double y, double z) {
     struct matrix * m = new_matrix(4, 4);
     double ** matrix = m -> m;
     ident(m);
+
     matrix[0][0] = x;
     matrix[1][1] = y;
     matrix[2][2] = z;
+
     return m;
 }
 
@@ -96,10 +142,12 @@ struct matrix * make_rotX(double theta) {
     ident(m);
     double sine = sin(theta);
     double cosine = cos(theta);
+
     matrix[1][1] = cosine;
     matrix[1][2] = -1 * sine;
     matrix[2][1] = sine;
     matrix[2][2] = cosine;
+
     return m;
 }
 
@@ -115,10 +163,12 @@ struct matrix * make_rotY(double theta) {
     ident(m);
     double sine = sin(theta);
     double cosine = cos(theta);
+
     matrix[0][0] = cosine;
     matrix[0][2] = sine;
     matrix[2][0] = -1 * sine;
     matrix[2][2] = cosine;
+
     return m;
 }
 
@@ -134,10 +184,12 @@ struct matrix * make_rotZ(double theta) {
     ident(m);
     double sine = sin(theta);
     double cosine = cos(theta);
+
     matrix[0][0] = cosine;
     matrix[0][1] = -1 * sine;
     matrix[1][0] = sine;
     matrix[1][1] = cosine;
+
     return m;
 }
 

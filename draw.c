@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "ml6.h"
 #include "display.h"
@@ -17,6 +18,19 @@
 void add_circle( struct matrix *edges,
                  double cx, double cy, double cz,
                  double r, double step ) {
+    double angle = 0;
+    double x0 = cx + r;
+    double y0 = cy;
+
+    for (double t = 0; t < 1; t += step) {
+        double x1 = r * cos(angle) + cx;
+        double y1 = r * sin(angle) + cy;
+
+        add_edge(edges, x0, y0, 0, x1, y1, 0);
+        x0 = x1;
+        y0 = y1;
+        angle += (2 * M_PI) / (1 / step);
+    }
 }
 
 /*======== void add_curve() ==========
@@ -41,6 +55,20 @@ void add_curve( struct matrix *edges,
                 double x2, double y2,
                 double x3, double y3,
                 double step, int type ) {
+    struct matrix * xco = generate_curve_coefs(x0, x1, x2, x3, type);
+    struct matrix * yco = generate_curve_coefs(y0, y1, y2, y3, type);
+    // double ** xm = xco -> m;
+    // double ** ym = yco -> m;
+
+    // for (double t = 0; t < 1; t += step) {
+    //     double xnew, ynew;
+    //     xnew = t * (t * (xm[0][0] * t + xm[0][1]) + xm[0][2]) + xm[0][3];
+    //     ynew = t * (t * (ym[0][0] * t + ym[0][1]) + ym[0][2]) + ym[0][3];
+
+    //     add_edge(edges, x0, y0, 0, xnew, ynew, 0);
+    //     x0 = xnew;
+    //     y0 = ynew;
+    // }
 }
 
 /*======== void add_point() ==========
